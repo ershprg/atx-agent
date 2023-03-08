@@ -1,0 +1,19 @@
+builds:
+  -
+    # https://github.com/golang/go/wiki/GoArm
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm
+      - arm64
+      - 386
+    goarm:
+      - 6
+      - 7
+    ignore:
+      - goos: windows
+        goarch: 386
+    flags: -tags vfs
+    hooks:
+      pre: go generate
