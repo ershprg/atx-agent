@@ -43,7 +43,7 @@ var (
 	}
 
 	version       = "dev"
-	owner         = "openatx"
+	owner         = "ershprg"
 	repo          = "atx-agent"
 	listenAddr    string
 	daemonLogPath = "/sdcard/atx-agent.daemon.log"
@@ -308,8 +308,8 @@ func init() {
 	// but it is in some kind of packed TZiff file that we do not support
 	// yet. To make it simple, we use FixedZone instead
 	zones := map[string]int{
-		"Asia/Shanghai": 8,
-		"CST":           8, // China Standard Time
+		"Europe/Berlin": 1,
+		"CET":           1, // China Standard Time
 	}
 	tz := getCachedProperty("persist.sys.timezone")
 	if tz != "" {
@@ -471,44 +471,6 @@ func main() {
 	}
 
 
-	service.Add("apkagent", cmdctrl.CommandInfo{
-		MaxRetries: 2,
-		Shell:      true,
-		OnStart: func() error {
-			log.Println("killProcessByName apk-agent.cli")
-			killProcessByName("apkagent.cli")
-			return nil
-		},
-		ArgsFunc: func() ([]string, error) {
-			packagePath, err := getPackagePath("com.github.uiautomator")
-			if err != nil {
-				return nil, err
-			}
-			return []string{"CLASSPATH=" + packagePath, "exec", "app_process", "/system/bin", "com.github.uiautomator.Console"}, nil
-		},
-	})
-
-	service.Start("apkagent")
-
-	// uiautomator 1.0
-	service.Add("uiautomator-1.0", cmdctrl.CommandInfo{
-		Args: []string{"sh", "-c",
-			"uiautomator runtest uiautomator-stub.jar bundle.jar -c com.github.uiautomatorstub.Stub"},
-		// Args: []string{"uiautomator", "runtest", "/data/local/tmp/uiautomator-stub.jar", "bundle.jar","-c", "com.github.uiautomatorstub.Stub"},
-		Stdout:          os.Stdout,
-		Stderr:          os.Stderr,
-		MaxRetries:      3,
-		RecoverDuration: 30 * time.Second,
-		StopSignal:      os.Interrupt,
-		OnStart: func() error {
-			uiautomatorTimer.Reset()
-			return nil
-		},
-		OnStop: func() {
-			uiautomatorTimer.Stop()
-		},
-	})
-
 	// uiautomator 2.0
 	service.Add("uiautomator", cmdctrl.CommandInfo{
 		Args: []string{"am", "instrument", "-w", "-r",
@@ -540,7 +502,6 @@ func main() {
 		for range uiautomatorTimer.C {
 			log.Println("uiautomator has not activity for 3 minutes, closed")
 			service.Stop("uiautomator")
-			service.Stop("uiautomator-1.0")
 		}
 	}()
 

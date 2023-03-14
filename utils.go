@@ -284,6 +284,8 @@ type PackageInfo struct {
 func readPackageInfo(packageName string) (info PackageInfo, err error) {
 	outbyte, err := runShell("pm", "path", packageName)
 	output := strings.TrimSpace(string(outbyte))
+	splice := strings.Split(output, "\n")
+	output = string(splice[0]) //Only 1st APK is covered?
 	if !strings.HasPrefix(output, "package:") {
 		err = errors.New("package " + strconv.Quote(packageName) + " not found")
 		return
