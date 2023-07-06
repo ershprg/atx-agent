@@ -1,5 +1,6 @@
 package main
 
+//License check: OpenSource OK
 import (
 	"bufio"
 	"context"
@@ -43,8 +44,8 @@ var (
 	}
 
 	version       = "dev"
-	owner         = "ershprg"
-	repo          = "atx-agent"
+	owner         = "bmw"
+	repo          = "bmw-agent"
 	listenAddr    string
 	daemonLogPath = "/sdcard/atx-agent.daemon.log"
 

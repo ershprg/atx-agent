@@ -39,7 +39,7 @@ func (server *Server) initHTTPServer() {
 	m := mux.NewRouter()
 
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "<html><head><title>ATX-Agent</title></head><body><h1>ATX-Agent is running</h1></body></html>")
+		io.WriteString(w, "<html><head><title>BMW-Agent</title></head><body><h1>BMW-Agent is running</h1></body></html>")
 	})
 
 	m.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
